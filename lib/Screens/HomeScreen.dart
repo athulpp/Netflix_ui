@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:netflix_ui/controller/controller.dart';
+import 'package:netflix_ui/widgets/homeMainTitle.dart';
+
+Controller controller = Controller();
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,27 +20,38 @@ class HomeScreen extends StatelessWidget {
               height: height,
               width: width,
             ),
-            FutureBuilder(builder: (context, AsyncSnapshot) {
-              return Padding(
-                padding: EdgeInsets.all(5),
-                child: Column(
-                  children: [
-                    Text("Popular Movies"),
-                    PopularMovies(
-                      height: height,
-                      width: width,
-                    ),
-                    Text('Trending Movies'),
-                    TrendingMovies(
-                      width: width,
-                      height: height,
-                    ), 
-                    Text('Feautured movies'),
-                    
-                  ],
-                ),
-              );
-            })
+            FutureBuilder(
+                future: controller.loadContent(),
+                builder: (context, Snapshot) {
+                  if (Snapshot.hasData) {
+                    return Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MainTitle(
+                            title: 'Popular Movies',
+                          ),
+                          PopularMovies(
+                            height: height,
+                            width: width,
+                          ),
+                          MainTitle(title: 'Trending Movies'),
+                          TrendingMovies(
+                            width: width,
+                            height: height,
+                          ),
+                          MainTitle(title: 'Upcoming Movies'),
+                          UpcomingMovies(width: width, height: height)
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                })
           ],
         ),
       ),
@@ -53,21 +68,34 @@ class PopularMovies extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: height * 0.3,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          // return Container(
-          //   width: width * 0.35,
-          //   height: height * 0.35,
-          //   child: ClipRRect(
-          //     child: Image.network(
-          //         'https://assets.teenvogue.com/photos/6155caed63ab243c2cd2c331/master/pass/EN-US_You_S3_Main_Best_Lies_Vertical_27x40_RGB_PRE.jpg'),
-          //   ),
-          // );
-          return IndexMovie(width: width, height: height, index: index);
-        },
-      ),
+      child: FutureBuilder<List<dynamic>>(
+          future: controller.getPopularMovies(),
+          builder: (context, item) {
+            if (item.hasData) {
+              List<dynamic> popularMovies = item.data!;
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: popularMovies.length,
+                itemBuilder: (context, index) {
+                  print(popularMovies[index]);
+                  return Container(
+                    width: width * 0.35,
+                    height: height * 0.35,
+                    child: ClipRRect(
+                        child: Image(
+                      image: NetworkImage('https://image.tmdb.org/t/p/w400' +
+                          popularMovies[index]['poster_path']),
+                      // child: Image.network(
+                      //     'https://assets.teenvogue.com/photos/6155caed63ab243c2cd2c331/master/pass/EN-US_You_S3_Main_Best_Lies_Vertical_27x40_RGB_PRE.jpg'),
+                    )),
+                  );
+                  // return IndexMovie(width: width, height: height, index: index);
+                },
+              );
+            } else {
+              return CircularProgressIndicator();
+            }
+          }),
     );
   }
 }
@@ -110,18 +138,69 @@ class TrendingMovies extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: height * 0.3,
-      child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            return Container(
-              width: width * 0.35,
-              height: height * 0.35,
-              child: ClipRRect(
-                child: Image.network(
-                    'https://assets.teenvogue.com/photos/6155caed63ab243c2cd2c331/master/pass/EN-US_You_S3_Main_Best_Lies_Vertical_27x40_RGB_PRE.jpg'),
-              ),
-            );
+      child: FutureBuilder<List<dynamic>>(
+          future: controller.getTrending(),
+          builder: (context, item) {
+            if (item.hasData) {
+              List<dynamic> getTrending = item.data!;
+              return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: getTrending.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                        width: width * 0.35,
+                        height: height * 0.35,
+                        child: ClipRRect(
+                          child: Image(
+                            image: NetworkImage(
+                                'https://image.tmdb.org/t/p/w400' +
+                                    getTrending[index]['poster_path']),
+                          ),
+                          //
+                        ));
+                  });
+            } else {
+              return CircularProgressIndicator();
+            }
+          }),
+    );
+  }
+}
+
+class UpcomingMovies extends StatelessWidget {
+  const UpcomingMovies({Key? key, required this.height, required this.width})
+      : super(key: key);
+  final double height;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height * 0.3,
+      child: FutureBuilder<List<dynamic>>(
+          future: controller.getUpComming(),
+          builder: (context, item) {
+            if (item.hasData) {
+              List<dynamic> getUpcoming = item.data!;
+              return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: getUpcoming.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                        width: width * 0.35,
+                        height: height * 0.35,
+                        child: ClipRRect(
+                          child: Image(
+                            image: NetworkImage(
+                                'https://image.tmdb.org/t/p/w500' +
+                                    getUpcoming[index]['poster_path']),
+                          ),
+                          //
+                        ));
+                  });
+            } else {
+              return CircularProgressIndicator();
+            }
           }),
     );
   }
@@ -142,9 +221,14 @@ class CoverScreen extends StatelessWidget {
           height: 0.6 * height,
           decoration: BoxDecoration(),
           child: Image.network(
-            'https://m.media-amazon.com/images/M/MV5BNjk4MzVlM2UtZGM0ZC00M2M1LThkMWEtZjUyN2U2ZTc0NmM5XkEyXkFqcGdeQXVyOTAzMTc2MjA@._V1_FMjpg_UX1000_.jpg',
+            controller.coverPoster,
             fit: BoxFit.cover,
           ),
+
+          // child: Image.network(
+          //   'https://m.media-amazon.com/images/M/MV5BNjk4MzVlM2UtZGM0ZC00M2M1LThkMWEtZjUyN2U2ZTc0NmM5XkEyXkFqcGdeQXVyOTAzMTc2MjA@._V1_FMjpg_UX1000_.jpg',
+          //   fit: BoxFit.cover,
+          // ),
         ),
         Positioned(
             top: 10,
@@ -190,7 +274,9 @@ class CoverScreen extends StatelessWidget {
                 Row(
                   children: [
                     Text("Categories"),
-                    IconButton(onPressed: () {}, icon: Icon(Icons.pin_drop))
+                    IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.arrow_drop_down_outlined))
                   ],
                 )
               ],
