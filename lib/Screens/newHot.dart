@@ -122,7 +122,11 @@ class _NewHotScreenState extends State<NewHotScreen> {
                 ],
               ),
             ),
-            ComingSoon(
+            // ComingSoon(
+            //   height: height,
+            //   width: width,
+            // )
+            EveryoneWatch(
               height: height,
               width: width,
             )
@@ -224,6 +228,81 @@ class ComingSoon extends StatelessWidget {
         ),
         Text(
             'Lorem ipsum dolor sit amet consecte sjgnsg;kdmdgdmgdgmdgmgmgpgdmgdgdmgdkgmgdkgmddmgdgmdkmdmgdgdkgdgpgmquia. Quo neque error repudiandae fuga? Ipsa laudantium moldfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhjjjjjjjjjjjjjjjjj ')
+      ],
+    );
+  }
+}
+
+class EveryoneWatch extends StatelessWidget {
+  const EveryoneWatch({Key? key, required this.width, required this.height})
+      : super(key: key);
+
+  final width;
+  final height;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 10,
+        ),
+        Container(
+          width: double.infinity,
+          height: height * 0.34,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: NetworkImage(
+                      'https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg'))),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(),
+            Row(
+              children: [
+                Column(
+                  children: [
+                    Icon(Icons.notifications),
+                    Text('Reminder me'),
+                  ],
+                ),
+                SizedBox(
+                  width: 15,
+                ),
+                Column(
+                  children: [Icon(Icons.info_outline_rounded), Text('Info')],
+                )
+              ],
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text('Released on Date'),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text('The Batman'),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+              'gdgdg;dgldg;;;;;;;;;;;;;;;;;;;;;;;;;;;;gkdgddddgfgdgdgdgdgdgdgggggggggggggggggggggggggggggggggggggggggggggggggggrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
+        ),
       ],
     );
   }
