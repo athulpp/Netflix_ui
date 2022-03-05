@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:netflix_ui/Screens/HomeScreen.dart';
+import 'package:netflix_ui/Screens/HomeScreen1.dart';
 import 'package:netflix_ui/Screens/download.dart';
 import 'package:netflix_ui/Screens/fastlaugh.dart';
 import 'package:netflix_ui/Screens/games.dart';

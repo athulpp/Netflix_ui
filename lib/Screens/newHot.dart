@@ -33,10 +33,64 @@ class NewHotScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(padding: EdgeInsets.all(10)),
+            Padding(padding: EdgeInsets.all(4)),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  (MaterialButton(
+                    onPressed: () {},
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blueAccent),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [Icon(Icons.food_bank), Text('Coming Soon')],
+                      ),
+                    ),
+                  )),
+                  MaterialButton(
+                    onPressed: () {},
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blueAccent),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [Icon(Icons.food_bank), Text('Coming Soon')],
+                      ),
+                    ),
+                  ),
+                  MaterialButton(
+                    minWidth: 3,
+                    onPressed: () {},
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blueAccent),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [Icon(Icons.food_bank), Text('Coming Soon')],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              //comin soon
+            ),
             Row(
-              children: [],
-            )
+              children: [Icon(Icons.food_bank), Text('Coming Soon')],
+            ),
+            ListView.builder(
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return Row(
+                    children: [
+                      Text('date'),
+                    ],
+                  );
+                })
           ],
         ),
       ),

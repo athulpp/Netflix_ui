@@ -1,3 +1,4 @@
+import 'package:bordered_text/bordered_text.dart';
 import 'package:flutter/material.dart';
 import 'package:netflix_ui/controller/controller.dart';
 import 'package:netflix_ui/widgets/homeMainTitle.dart';
@@ -42,7 +43,11 @@ class HomeScreen extends StatelessWidget {
                             height: height,
                           ),
                           MainTitle(title: 'Upcoming Movies'),
-                          UpcomingMovies(width: width, height: height)
+                          UpcomingMovies(width: width, height: height),
+                          // MainTitle(title: 'Top Movies'),
+                          // NumberCard(
+                          //   index: 0,
+                          // )
                         ],
                       ),
                     );
@@ -77,18 +82,39 @@ class PopularMovies extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: popularMovies.length,
                 itemBuilder: (context, index) {
-                  print(popularMovies[index]);
-                  return Container(
-                    width: width * 0.35,
-                    height: height * 0.35,
-                    child: ClipRRect(
-                        child: Image(
-                      image: NetworkImage('https://image.tmdb.org/t/p/w400' +
-                          popularMovies[index]['poster_path']),
-                      // child: Image.network(
-                      //     'https://assets.teenvogue.com/photos/6155caed63ab243c2cd2c331/master/pass/EN-US_You_S3_Main_Best_Lies_Vertical_27x40_RGB_PRE.jpg'),
-                    )),
-                  );
+                  return Stack(children: [
+                    Row(
+                      children: [
+                        SizedBox(width: 50
+                            // height: height * 0.65,
+                            ),
+                        Container(
+                          width: width * 0.35,
+                          height: height * 0.35,
+                          child: ClipRRect(
+                              child: Image(
+                            image: NetworkImage(
+                                'https://image.tmdb.org/t/p/w400' +
+                                    popularMovies[index]['poster_path']),
+                            // child: Image.network(
+                            //     'https://assets.teenvogue.com/photos/6155caed63ab243c2cd2c331/master/pass/EN-US_You_S3_Main_Best_Lies_Vertical_27x40_RGB_PRE.jpg'),
+                          )),
+                        ),
+                      ],
+                    ),
+                    Positioned(
+                      left: 13,
+                      bottom: 0,
+                      child: BorderedText(
+                        strokeWidth: 1.0,
+                        child: Text(
+                          '${index + 1}',
+                          style: TextStyle(
+                              fontSize: 120, decoration: TextDecoration.none),
+                        ),
+                      ),
+                    )
+                  ]);
                   // return IndexMovie(width: width, height: height, index: index);
                 },
               );
@@ -118,10 +144,7 @@ class IndexMovie extends StatelessWidget {
       Container(
         width: width * 0.35,
         height: height * 0.35,
-        child: ClipRRect(
-          child: Image.network(
-              'https://assets.teenvogue.com/photos/6155caed63ab243c2cd2c331/master/pass/EN-US_You_S3_Main_Best_Lies_Vertical_27x40_RGB_PRE.jpg'),
-        ),
+        child: ClipRRect(),
       ),
       Positioned(child: Center(child: Text('${index + 1}')))
     ]);
@@ -138,31 +161,34 @@ class TrendingMovies extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: height * 0.3,
-      child: FutureBuilder<List<dynamic>>(
-          future: controller.getTrending(),
-          builder: (context, item) {
-            if (item.hasData) {
-              List<dynamic> getTrending = item.data!;
-              return ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: getTrending.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                        width: width * 0.35,
-                        height: height * 0.35,
-                        child: ClipRRect(
-                          child: Image(
-                            image: NetworkImage(
-                                'https://image.tmdb.org/t/p/w400' +
-                                    getTrending[index]['poster_path']),
-                          ),
-                          //
-                        ));
-                  });
-            } else {
-              return CircularProgressIndicator();
-            }
-          }),
+      child: Stack(children: [
+        FutureBuilder<List<dynamic>>(
+            future: controller.getTrending(),
+            builder: (context, item) {
+              if (item.hasData) {
+                List<dynamic> getTrending = item.data!;
+                return ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: getTrending.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                          width: width * 0.35,
+                          height: height * 0.35,
+                          child: ClipRRect(
+                            child: Image(
+                              image: NetworkImage(
+                                  'https://image.tmdb.org/t/p/w400' +
+                                      getTrending[index]['poster_path']),
+                            ),
+
+                            //
+                          ));
+                    });
+              } else {
+                return CircularProgressIndicator();
+              }
+            }),
+      ]),
     );
   }
 }
@@ -283,24 +309,24 @@ class CoverScreen extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-          top: 320,
-          left: 30,
-          child: Container(
-            width: width * 0.9,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Psychological'),
-                Text('Dark'),
-                Text('Suspensful'),
-                Text('Mystery'),
-                Text('Thriller'),
-                Text('Mind Game')
-              ],
-            ),
-          ),
-        ),
+        // Positioned(
+        //   top: 320,
+        //   left: 30,
+        //   child: Container(
+        //     width: width * 0.9,
+        //     child: Row(
+        //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //       children: [
+        //         Text('Psychological'),
+        //         Text('Dark'),
+        //         Text('Suspensful'),
+        //         Text('Mystery'),
+        //         Text('Thriller'),
+        //         Text('Mind Game')
+        //       ],
+        //     ),
+        //   ),
+        // ),
         Positioned(
             bottom: 18,
             left: 50,
@@ -366,3 +392,34 @@ class CoverScreen extends StatelessWidget {
     );
   }
 }
+
+// class NumberCard extends StatelessWidget {
+//   const NumberCard({Key? key, required this.index}) : super(key: key);
+//   final int index;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Stack(
+//       children: [
+//         Row(
+//           children: [
+//             SizedBox(
+//               width: 40,
+//               height: 150,
+//             ),
+//             Container(
+//               width: 150,
+//               height: 250,
+//               decoration: BoxDecoration(
+//                   borderRadius: BorderRadius.circular(10),
+//                   image: const DecorationImage(
+//                       image: NetworkImage(
+//                           'http://assets.stickpng.com/images/585e4bf3cb11b227491c339a.png'))),
+//             ),
+//           ],
+//         ),
+//         Text('$index')
+//       ],
+//     );
+//   }
+// }
