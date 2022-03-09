@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:netflix_ui/Screens/HomeScreen.dart';
 
 class NewHotScreen extends StatefulWidget {
   const NewHotScreen({Key? key}) : super(key: key);
@@ -125,11 +126,76 @@ class _NewHotScreenState extends State<NewHotScreen> {
             // ComingSoon(
             //   height: height,
             //   width: width,
+            // // )
+            // EveryoneWatch(
+            //   height: height,
+            //   width: width,
             // )
-            EveryoneWatch(
-              height: height,
-              width: width,
-            )
+            Coming
+                ? Center(
+                    child: FutureBuilder<List<dynamic>>(
+                        future: controller.getPopularMovies(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final upcomingList = snapshot.data;
+                            return Column(
+                              children: [
+                                Container(
+                                  height: height,
+                                  child: ListView.builder(
+                                      itemCount: upcomingList!.length,
+                                      itemBuilder: (context, index) {
+                                        return ComingSoon(
+                                          width: width,
+                                          height: height,
+                                          index: index,
+                                          uri: upcomingList[index]
+                                              ["backdrop_path"],
+                                          date: upcomingList[index]
+                                              ['release_date'],
+                                          name: upcomingList[index]
+                                              ['original_title'],
+                                          descripition: upcomingList[index]
+                                              ['overview'],
+                                        );
+                                      }),
+                                ),
+                              ],
+                            );
+                          }
+                          return Center(child: CircularProgressIndicator());
+                        }),
+                  )
+                : FutureBuilder<List<dynamic>>(
+                    future: controller.getUpComming(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final trending = snapshot.data;
+                        return Column(
+                          children: [
+                            Container(
+                              height: height,
+                              child: ListView.builder(
+                                  itemCount: trending!.length,
+                                  itemBuilder: (context, index) {
+                                    // String? date =
+                                    //     trending[index]["release_date"];
+                                    return EveryoneWatch(
+                                      width: width,
+                                      height: height,
+                                      uri: trending[index]["backdrop_path"],
+                                      name: trending[index]['original_title'],
+                                      descripition: trending[index]['overview'],
+                                      date: trending[index]['release_date'],
+                                    );
+                                  }),
+                            )
+                          ],
+                        );
+                      }
+                      return CircularProgressIndicator();
+                    },
+                  ),
           ],
         ),
       ),
@@ -138,14 +204,32 @@ class _NewHotScreenState extends State<NewHotScreen> {
 }
 
 class ComingSoon extends StatelessWidget {
-  ComingSoon({Key? key, required this.width, required this.height})
+  ComingSoon(
+      {Key? key,
+      required this.descripition,
+      required this.name,
+      required this.width,
+      required this.height,
+      required this.index,
+      required this.uri,
+      required this.date})
       : super(key: key);
-
+  final String uri;
   final width;
   final height;
   Widget DateWidget = Container();
+  int index;
+  final date;
+  final name;
+  final descripition;
+
   @override
   Widget build(BuildContext context) {
+    if (date != null) {
+      final day = date[8] + date[9];
+      final month = date[4] + date[5];
+      DateWidget = getDate(day, month);
+    }
     return Column(
       children: [
         SizedBox(
@@ -154,12 +238,12 @@ class ComingSoon extends StatelessWidget {
         Row(
           children: [
             SizedBox(
-              width: 10,
+              width: width * 0.04,
             ),
-            // DateWidget,
+            DateWidget,
             Container(
-              child: Center(child: Text('Date')),
-              width: width * 0.23,
+              // child: Center(child: Text('Date')),
+              width: width * 0.13,
               height: height * 0.4,
             ),
             SizedBox(
@@ -167,14 +251,15 @@ class ComingSoon extends StatelessWidget {
             ),
             // Padding(padding: EdgeInsets.all(8))
             Container(
-                width: width * 0.68,
+                width: width * 0.7,
                 height: height * 0.3,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(16),
                     // color: Colors.blue,
                     image: DecorationImage(
                         image: NetworkImage(
-                            'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg'))))
+                            'https://image.tmdb.org/t/p/w400' + uri),
+                        fit: BoxFit.fill)))
           ],
         ),
         Padding(
@@ -216,30 +301,115 @@ class ComingSoon extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text('Releasing On 2022-03-01'),
+              Text('Releasing on $date'),
             ],
           ),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
-            children: [Text('The Batman')],
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                  width: width * 0.9,
+                  child: Text(
+                    name,
+                  )),
+            ],
           ),
         ),
-        Text(
-            'Lorem ipsum dolor sit amet consecte sjgnsg;kdmdgdmgdgmdgmgmgpgdmgdgdmgdkgmgdkgmddmgdgmdkmdmgdgdkgdgpgmquia. Quo neque error repudiandae fuga? Ipsa laudantium moldfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhjjjjjjjjjjjjjjjjj ')
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(descripition,
+              style: TextStyle(color: Colors.grey.withOpacity(0.6))),
+        )
       ],
     );
+  }
+
+  Widget getDate(String day, String month) {
+    String monthName = getMonthName(month);
+    return Container(
+      child: Column(
+        children: [
+          Text(
+            monthName,
+            style: TextStyle(
+                color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            day,
+            style: TextStyle(
+                color: Colors.white, fontSize: 25, fontWeight: FontWeight.w800),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String getMonthName(String month) {
+    String month2;
+    switch (month) {
+      case "01":
+        month2 = "Jan";
+        break;
+      case "02":
+        month2 = "Feb";
+        break;
+      case "03":
+        month2 = "Mar";
+        break;
+      case "04":
+        month2 = "Apr";
+        break;
+      case "05":
+        month2 = "May";
+        break;
+      case "06":
+        month2 = "Jun";
+        break;
+      case "07":
+        month2 = "Jul";
+        break;
+      case "08":
+        month2 = "Aug";
+        break;
+      case "09":
+        month2 = "Sep";
+        break;
+      case "10":
+        month2 = "Oct";
+        break;
+      case "11":
+        month2 = "Nov";
+        break;
+      case "12":
+        month2 = "Dec";
+        break;
+      default:
+        month2 = "Mar";
+    }
+    return month2;
   }
 }
 
 class EveryoneWatch extends StatelessWidget {
-  const EveryoneWatch({Key? key, required this.width, required this.height})
+  EveryoneWatch(
+      {Key? key,
+      required this.date,
+      required this.width,
+      required this.height,
+      required this.uri,
+      required this.name,
+      required this.descripition})
       : super(key: key);
 
   final width;
   final height;
-
+  final uri;
+  final name;
+  final descripition;
+  final date;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -252,8 +422,8 @@ class EveryoneWatch extends StatelessWidget {
           height: height * 0.34,
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: NetworkImage(
-                      'https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg'))),
+                  image:
+                      NetworkImage('https://image.tmdb.org/t/p/w400' + uri))),
         ),
         SizedBox(
           height: 2,
@@ -285,7 +455,7 @@ class EveryoneWatch extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text('Released on Date'),
+              Text('Released on Date $date'),
             ],
           ),
         ),
@@ -294,14 +464,19 @@ class EveryoneWatch extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text('The Batman'),
+              Text(name),
             ],
           ),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-              'gdgdg;dgldg;;;;;;;;;;;;;;;;;;;;;;;;;;;;gkdgddddgfgdgdgdgdgdgdgggggggggggggggggggggggggggggggggggggggggggggggggggrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
+            descripition,
+            style: TextStyle(color: Colors.grey.withOpacity(0.6)),
+          ),
+        ),
+        Divider(
+          color: Colors.white.withOpacity(0.5),
         ),
       ],
     );

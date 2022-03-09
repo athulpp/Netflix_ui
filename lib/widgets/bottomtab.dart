@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:netflix_ui/Screens/HomeScreen.dart';
-import 'package:netflix_ui/Screens/HomeScreen1.dart';
+
 import 'package:netflix_ui/Screens/download.dart';
 import 'package:netflix_ui/Screens/fastlaugh.dart';
 import 'package:netflix_ui/Screens/games.dart';
@@ -69,12 +69,12 @@ class BottomTabBar extends StatelessWidget {
                     Icons.video_collection_outlined,
                     color: Colors.white70,
                   ),
-                  label: 'News & Hot',
+                  label: 'New & Hot',
                 ),
                 BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.play_circle_fill_outlined),
+                  activeIcon: Icon(Icons.emoji_emotions),
                   icon: Icon(
-                    Icons.play_circle_fill_rounded,
+                    Icons.emoji_emotions,
                     color: Colors.white70,
                   ),
                   label: 'Fast Laughs ',

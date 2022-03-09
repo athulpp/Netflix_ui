@@ -1,6 +1,8 @@
 import 'package:bordered_text/bordered_text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:netflix_ui/controller/controller.dart';
+import 'package:netflix_ui/widgets/category_list.dart';
 import 'package:netflix_ui/widgets/homeMainTitle.dart';
 
 Controller controller = Controller();
@@ -44,10 +46,6 @@ class HomeScreen extends StatelessWidget {
                           ),
                           MainTitle(title: 'Upcoming Movies'),
                           UpcomingMovies(width: width, height: height),
-                          // MainTitle(title: 'Top Movies'),
-                          // NumberCard(
-                          //   index: 0,
-                          // )
                         ],
                       ),
                     );
@@ -80,12 +78,12 @@ class PopularMovies extends StatelessWidget {
               List<dynamic> popularMovies = item.data!;
               return ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: popularMovies.length,
+                itemCount: 10,
                 itemBuilder: (context, index) {
                   return Stack(children: [
                     Row(
                       children: [
-                        SizedBox(width: 50
+                        SizedBox(width: 30
                             // height: height * 0.65,
                             ),
                         Container(
@@ -103,14 +101,17 @@ class PopularMovies extends StatelessWidget {
                       ],
                     ),
                     Positioned(
-                      left: 13,
-                      bottom: 0,
+                      left: 10,
+                      bottom: -5,
                       child: BorderedText(
-                        strokeWidth: 1.0,
+                        strokeColor: Colors.white,
+                        strokeWidth: 5.0,
                         child: Text(
                           '${index + 1}',
                           style: TextStyle(
-                              fontSize: 120, decoration: TextDecoration.none),
+                              color: Colors.black,
+                              fontSize: 120,
+                              decoration: TextDecoration.none),
                         ),
                       ),
                     )
@@ -237,7 +238,8 @@ class CoverScreen extends StatelessWidget {
   final double width;
   CoverScreen({Key? key, required this.height, required this.width})
       : super(key: key);
-
+  var myInitialItem = 'item1';
+  final myitems = ['item1', 'item2', 'item3', 'item4'];
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -246,9 +248,13 @@ class CoverScreen extends StatelessWidget {
           width: double.infinity,
           height: 0.6 * height,
           decoration: BoxDecoration(),
-          child: Image.network(
-            controller.coverPoster,
-            fit: BoxFit.cover,
+          child: Container(
+            width: width,
+            height: height * 0.5,
+            child: Image.network(
+              controller.coverPoster,
+              fit: BoxFit.cover,
+            ),
           ),
 
           // child: Image.network(
@@ -271,17 +277,23 @@ class CoverScreen extends StatelessWidget {
                         'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Netflix_2015_N_logo.svg/1200px-Netflix_2015_N_logo.svg.png'),
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(onPressed: () {}, icon: Icon(Icons.search)),
                       SizedBox(
                         width: 10,
                       ),
                       Container(
-                        width: 10,
-                        height: 10,
+                        width: 20,
+                        height: 20,
                         child: Image.network(
-                            'http://assets.stickpng.com/images/585e4bf3cb11b227491c339a.png'),
+                          'http://assets.stickpng.com/images/585e4bf3cb11b227491c339a.png',
+                          scale: 5,
+                        ),
                       ),
+                      SizedBox(
+                        width: 10,
+                      )
                     ],
                   )
                 ],
@@ -299,9 +311,25 @@ class CoverScreen extends StatelessWidget {
                 Text('Movies'),
                 Row(
                   children: [
+                    // InkWell(onTap: () {
+                    //   CategoriesDropDown();
+                    // }),
                     Text("Categories"),
                     IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const CategoryList()),
+                          );
+                          // DropdownButton(
+                          //     value: myInitialItem,
+                          //     items: myitems.map((items) {
+                          //       return DropdownMenuItem(
+                          //           value: items, child: Text(items));
+                          //     }).toList(),
+                          //     onChanged: (value) {});
+                        },
                         icon: Icon(Icons.arrow_drop_down_outlined))
                   ],
                 )
@@ -421,5 +449,22 @@ class CoverScreen extends StatelessWidget {
 //         Text('$index')
 //       ],
 //     );
+
 //   }
 // }
+
+// Future<void>(BuildContext context, String title){}
+//   var myInitialItem = 'item1';
+//   final myitems = ['item1', 'item2', 'item3', 'item4'];
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//         body: Center(
+//             child: DropdownButton(
+//       value: myInitialItem,
+//       items: myitems.map((items) {
+//         return DropdownMenuItem(value: items, child: Text(items));
+//       }).toList(),
+//       onChanged: (value) {},
+//     )));
+//   }
